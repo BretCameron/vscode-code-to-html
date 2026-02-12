@@ -38,6 +38,11 @@
         "command": "codeToHtml.selectFilePath",
         "title": "Select File Path Display",
         "category": "Code to HTML"
+      },
+      {
+        "command": "codeToHtml.toggleBorder",
+        "title": "Toggle Border",
+        "category": "Code to HTML"
       }
     ],
     "menus": {
@@ -87,6 +92,11 @@
           "type": "boolean",
           "default": false,
           "description": "Include line numbers"
+        },
+        "codeToHtml.border": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add a light grey border around code blocks"
         },
         "codeToHtml.showFilePath": {
           "type": "string",

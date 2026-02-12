@@ -10,6 +10,7 @@ export interface FileEntry {
 export interface BuildOptions {
   theme: BundledTheme;
   lineNumbers: boolean;
+  border: boolean;
   showFilePath: "filename" | "relative" | "absolute" | "none";
   workspaceRoot?: string;
 }
@@ -33,6 +34,14 @@ function getDisplayName(
     default:
       return path.basename(absolutePath);
   }
+}
+
+function addBorder(html: string): string {
+  // Shiki's <pre> already has a style attribute — inject border into it
+  return html.replace(
+    /(<pre[^>]*style=")/,
+    '$1border:1px solid #d0d7de;border-radius:6px;'
+  );
 }
 
 function addLineNumbers(html: string): string {
@@ -84,13 +93,17 @@ export async function buildHtml(
       highlighted = addLineNumbers(highlighted);
     }
 
+    if (options.border) {
+      highlighted = addBorder(highlighted);
+    }
+
     const displayName = files.length > 1
       ? getDisplayName(file.absolutePath, options.showFilePath, options.workspaceRoot)
       : null;
 
     if (displayName) {
       parts.push(
-        `<p style="font-family:monospace;margin:1em 0 0.25em"><strong>${escapeHtml(displayName)}</strong></p>`
+        `<p style="font-family:inherit;margin:1em 0 0.25em"><strong>${escapeHtml(displayName)}</strong></p>`
       );
     }
     parts.push(highlighted);

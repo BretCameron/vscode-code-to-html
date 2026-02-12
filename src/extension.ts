@@ -16,6 +16,7 @@ async function copyFromEditor(
 
   const theme = config.get<string>("theme", "github-dark") as BundledTheme;
   const lineNumbers = config.get<boolean>("lineNumbers", false);
+  const border = config.get<boolean>("border", false);
   const showFilePath = config.get<BuildOptions["showFilePath"]>("showFilePath", "filename");
 
   const selection = editor.selection;
@@ -27,7 +28,7 @@ async function copyFromEditor(
   const filePath = editor.document.uri.fsPath;
   const files: FileEntry[] = [{ absolutePath: filePath, content }];
 
-  const html = await buildHtml(files, { theme, lineNumbers, showFilePath, workspaceRoot });
+  const html = await buildHtml(files, { theme, lineNumbers, border, showFilePath, workspaceRoot });
   await vscode.env.clipboard.writeText(html);
 
   const what = hasSelection ? "selection" : "file";
@@ -41,6 +42,7 @@ async function copyFromExplorer(
 ): Promise<void> {
   const theme = config.get<string>("theme", "github-dark") as BundledTheme;
   const lineNumbers = config.get<boolean>("lineNumbers", false);
+  const border = config.get<boolean>("border", false);
   const showFilePath = config.get<BuildOptions["showFilePath"]>("showFilePath", "filename");
 
   const files: FileEntry[] = [];
@@ -65,7 +67,7 @@ async function copyFromExplorer(
     return;
   }
 
-  const html = await buildHtml(files, { theme, lineNumbers, showFilePath, workspaceRoot });
+  const html = await buildHtml(files, { theme, lineNumbers, border, showFilePath, workspaceRoot });
   await vscode.env.clipboard.writeText(html);
 
   let msg = `Copied ${files.length} file(s) as HTML`;
@@ -133,13 +135,23 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  const toggleBorder = vscode.commands.registerCommand(
+    "codeToHtml.toggleBorder",
+    async () => {
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const current = config.get<boolean>("border", false);
+      await config.update("border", !current, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(`Border ${!current ? "enabled" : "disabled"}`);
+    }
+  );
+
   const configWatcher = vscode.workspace.onDidChangeConfiguration((e) => {
     if (e.affectsConfiguration("codeToHtml.theme")) {
       resetHighlighter();
     }
   });
 
-  context.subscriptions.push(cmd, selectTheme, toggleLineNumbers, selectFilePath, configWatcher);
+  context.subscriptions.push(cmd, selectTheme, toggleLineNumbers, toggleBorder, selectFilePath, configWatcher);
 }
 
 export function deactivate() {
