@@ -55,6 +55,14 @@
         }
       ]
     },
+    "keybindings": [
+      {
+        "command": "codeToHtml.copyAsHtml",
+        "key": "ctrl+shift+h",
+        "mac": "cmd+shift+h",
+        "when": "editorTextFocus"
+      }
+    ],
     "configuration": {
       "title": "Code to HTML",
       "properties": {

@@ -55,8 +55,8 @@ function addLineNumbers(html: string): string {
       const num = i + 1;
       return (
         `<tr>` +
-        `<td style="text-align:right;padding-right:1em;user-select:none;opacity:0.5;white-space:nowrap">${num}</td>` +
-        `<td style="white-space:pre">${line}</td>` +
+        `<td style="border:none;padding:0 1em 0 0;text-align:right;user-select:none;opacity:0.5;white-space:nowrap;line-height:inherit;font-size:inherit">${num}</td>` +
+        `<td style="border:none;padding:0;white-space:pre;line-height:inherit;font-size:inherit">${line}</td>` +
         `</tr>`
       );
     })
