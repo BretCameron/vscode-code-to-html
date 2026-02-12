@@ -1,124 +1,26 @@
 import * as path from "path";
 import {
   createHighlighter,
+  bundledLanguages,
   type Highlighter,
   type BundledLanguage,
   type BundledTheme,
 } from "shiki";
 
-const BUNDLED_LANGS: BundledLanguage[] = [
-  "java",
-  "c",
-  "cpp",
-  "python",
-  "javascript",
-  "typescript",
-  "html",
-  "css",
-  "sql",
-  "shellscript",
-  "json",
-  "xml",
-  "markdown",
-  "tsx",
-  "jsx",
-  "yaml",
-  "rust",
-  "go",
-  "ruby",
-  "php",
-  "swift",
-  "kotlin",
-  "r",
-  "matlab",
-  "latex",
-  "makefile",
-  "dockerfile",
-  "csv",
-  "toml",
-  "ini",
-  "bat",
-  "powershell",
-  "lua",
-  "perl",
-  "scala",
-  "haskell",
-  "asm",
-];
+const ALL_LANG_IDS = Object.keys(bundledLanguages) as BundledLanguage[];
 
-const THEMES: BundledTheme[] = [
+export const THEMES: BundledTheme[] = [
   "github-dark",
   "github-light",
+  "dracula",
   "nord",
   "one-dark-pro",
-  "dracula",
+  "monokai",
+  "solarized-dark",
+  "solarized-light",
+  "night-owl",
+  "catppuccin-mocha",
 ];
-
-const EXT_TO_LANG: Record<string, BundledLanguage> = {
-  ".java": "java",
-  ".c": "c",
-  ".h": "c",
-  ".cpp": "cpp",
-  ".cxx": "cpp",
-  ".cc": "cpp",
-  ".hpp": "cpp",
-  ".py": "python",
-  ".pyw": "python",
-  ".js": "javascript",
-  ".mjs": "javascript",
-  ".cjs": "javascript",
-  ".ts": "typescript",
-  ".mts": "typescript",
-  ".cts": "typescript",
-  ".tsx": "tsx",
-  ".jsx": "jsx",
-  ".html": "html",
-  ".htm": "html",
-  ".css": "css",
-  ".sql": "sql",
-  ".sh": "shellscript",
-  ".bash": "shellscript",
-  ".zsh": "shellscript",
-  ".json": "json",
-  ".xml": "xml",
-  ".svg": "xml",
-  ".md": "markdown",
-  ".yaml": "yaml",
-  ".yml": "yaml",
-  ".rs": "rust",
-  ".go": "go",
-  ".rb": "ruby",
-  ".php": "php",
-  ".swift": "swift",
-  ".kt": "kotlin",
-  ".kts": "kotlin",
-  ".r": "r",
-  ".R": "r",
-  ".m": "matlab",
-  ".tex": "latex",
-  ".mk": "makefile",
-  ".toml": "toml",
-  ".ini": "ini",
-  ".cfg": "ini",
-  ".bat": "bat",
-  ".cmd": "bat",
-  ".ps1": "powershell",
-  ".lua": "lua",
-  ".pl": "perl",
-  ".pm": "perl",
-  ".scala": "scala",
-  ".hs": "haskell",
-  ".asm": "asm",
-  ".s": "asm",
-  ".csv": "csv",
-};
-
-const FILENAME_TO_LANG: Record<string, BundledLanguage> = {
-  Makefile: "makefile",
-  Dockerfile: "dockerfile",
-  Rakefile: "ruby",
-  Gemfile: "ruby",
-};
 
 let highlighter: Highlighter | null = null;
 
@@ -126,7 +28,7 @@ export async function getHighlighter(): Promise<Highlighter> {
   if (!highlighter) {
     highlighter = await createHighlighter({
       themes: THEMES,
-      langs: BUNDLED_LANGS,
+      langs: ALL_LANG_IDS,
     });
   }
   return highlighter;
@@ -139,15 +41,39 @@ export async function resetHighlighter(): Promise<void> {
   }
 }
 
+const LANG_SET = new Set<string>(ALL_LANG_IDS);
+
+// Extensions not directly recognized as Shiki language IDs
+const EXT_ALIASES: Record<string, BundledLanguage> = {
+  htm: "html",
+  mjs: "javascript",
+  cjs: "javascript",
+  mts: "typescript",
+  cts: "typescript",
+  cxx: "cpp",
+  cc: "cpp",
+  hpp: "cpp",
+  h: "c",
+  pyw: "python",
+  svg: "xml",
+  cfg: "ini",
+  mk: "makefile",
+  pm: "perl",
+  s: "asm",
+};
+
 export function detectLanguage(
   filePath: string
 ): BundledLanguage | "plaintext" {
   const basename = path.basename(filePath);
-  if (FILENAME_TO_LANG[basename]) {
-    return FILENAME_TO_LANG[basename];
-  }
-  const ext = path.extname(filePath).toLowerCase();
-  return EXT_TO_LANG[ext] || "plaintext";
+  const lower = basename.toLowerCase();
+  if (LANG_SET.has(lower)) return lower as BundledLanguage;
+
+  const ext = path.extname(filePath).toLowerCase().slice(1);
+  if (ext && LANG_SET.has(ext)) return ext as BundledLanguage;
+  if (ext && EXT_ALIASES[ext]) return EXT_ALIASES[ext];
+
+  return "plaintext";
 }
 
 export async function highlightCode(

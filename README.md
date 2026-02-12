@@ -7,9 +7,9 @@ Right-click any file (or multiple files) in the Explorer and select **Copy as HT
 ## Features
 
 - **Syntax highlighting** powered by [Shiki](https://shiki.matsu.io/) — the same engine behind VS Code's syntax highlighting
-- **40+ languages** including TypeScript, Python, Rust, Go, C++, Ruby, Shell, and many more
+- **300+ languages** including TypeScript, Python, Rust, Go, C++, Ruby, Shell, and many more
 - **Multiple files** — select several files at once to copy them all in one block
-- **5 color themes** — GitHub Dark, GitHub Light, Nord, One Dark Pro, Dracula
+- **10 color themes** — GitHub Dark/Light, Dracula, Nord, One Dark Pro, Monokai, Solarized Dark/Light, Night Owl, Catppuccin Mocha
 - **Optional line numbers** with proper alignment and non-selectable styling
 - **File path headers** — show the filename, relative path, absolute path, or nothing above each code block
 
@@ -25,13 +25,13 @@ Binary files and files over 1 MB are automatically skipped.
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `codeToHtml.theme` | `github-dark` | Color theme. Options: `github-dark`, `github-light`, `nord`, `one-dark-pro`, `dracula` |
+| `codeToHtml.theme` | `github-dark` | Color theme. Options: `github-dark`, `github-light`, `dracula`, `nord`, `one-dark-pro`, `monokai`, `solarized-dark`, `solarized-light`, `night-owl`, `catppuccin-mocha` |
 | `codeToHtml.lineNumbers` | `false` | Include line numbers in the output |
 | `codeToHtml.showFilePath` | `filename` | File path display above each code block. Options: `filename`, `relative`, `absolute`, `none` |
 
 ## Supported Languages
 
-Assembly, C, C++, CSS, CSV, Dockerfile, Go, Haskell, HTML, INI, Java, JavaScript, JSON, JSX, Kotlin, LaTeX, Lua, Makefile, Markdown, MATLAB, Perl, PHP, PowerShell, Python, R, Ruby, Rust, Scala, Shell/Bash, SQL, Swift, TOML, TSX, TypeScript, XML, YAML, and more. Unrecognised file types are copied as plain text.
+300+ languages — every language supported by [Shiki](https://shiki.matsu.io/languages), including TypeScript, Python, Rust, Go, C/C++, Java, Ruby, PHP, Swift, Kotlin, Shell, SQL, and many more. Unrecognised file types are copied as plain text.
 
 ## License
 

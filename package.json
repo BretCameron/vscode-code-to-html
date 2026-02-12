@@ -48,9 +48,14 @@
           "enum": [
             "github-dark",
             "github-light",
+            "dracula",
             "nord",
             "one-dark-pro",
-            "dracula"
+            "monokai",
+            "solarized-dark",
+            "solarized-light",
+            "night-owl",
+            "catppuccin-mocha"
           ],
           "description": "Syntax highlighting theme"
         },
