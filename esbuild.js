@@ -15,7 +15,23 @@ const opts = {
 };
 
 if (watch) {
-  esbuild.context(opts).then((ctx) => ctx.watch());
+  esbuild
+    .context({
+      ...opts,
+      plugins: [
+        {
+          name: "watch-log",
+          setup(build) {
+            build.onStart(() => console.log("[watch] build started"));
+            build.onEnd((result) => {
+              if (result.errors.length) console.error("[watch] build failed");
+              else console.log("[watch] build finished");
+            });
+          },
+        },
+      ],
+    })
+    .then((ctx) => ctx.watch());
 } else {
   esbuild.build(opts);
 }

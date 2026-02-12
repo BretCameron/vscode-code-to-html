@@ -21,7 +21,7 @@
     "commands": [
       {
         "command": "codeToHtml.copyAsHtml",
-        "title": "Code to HTML: Copy as HTML"
+        "title": "Copy as HTML"
       }
     ],
     "menus": {
@@ -30,6 +30,12 @@
           "command": "codeToHtml.copyAsHtml",
           "group": "5_cutcopypaste",
           "when": "resourceScheme == file"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "codeToHtml.copyAsHtml",
+          "group": "9_cutcopypaste"
         }
       ]
     },

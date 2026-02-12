@@ -2,11 +2,22 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
+      "label": "watch",
       "type": "npm",
-      "script": "build",
-      "problemMatcher": ["$esbuild-watch"],
-      "isBackground": false
+      "script": "watch",
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^\\[watch\\] build (failed|started)",
+          "kind": "location",
+          "file": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "\\[watch\\] build started",
+          "endsPattern": "\\[watch\\] build (finished|failed)"
+        }
+      },
+      "isBackground": true
     }
   ]
 }
