@@ -21,7 +21,23 @@
     "commands": [
       {
         "command": "codeToHtml.copyAsHtml",
-        "title": "Copy as HTML"
+        "title": "Copy as HTML",
+        "category": "Code to HTML"
+      },
+      {
+        "command": "codeToHtml.selectTheme",
+        "title": "Select Theme",
+        "category": "Code to HTML"
+      },
+      {
+        "command": "codeToHtml.toggleLineNumbers",
+        "title": "Toggle Line Numbers",
+        "category": "Code to HTML"
+      },
+      {
+        "command": "codeToHtml.selectFilePath",
+        "title": "Select File Path Display",
+        "category": "Code to HTML"
       }
     ],
     "menus": {

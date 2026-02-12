@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as fs from "fs/promises";
 import type { BundledTheme } from "shiki";
-import { resetHighlighter } from "./highlighter.js";
+import { resetHighlighter, THEMES } from "./highlighter.js";
 import { buildHtml, type BuildOptions, type FileEntry } from "./html-builder.js";
 
 async function copyFromEditor(
@@ -96,13 +96,50 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  const selectTheme = vscode.commands.registerCommand(
+    "codeToHtml.selectTheme",
+    async () => {
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const current = config.get<string>("theme", "github-dark");
+      const picked = await vscode.window.showQuickPick(
+        THEMES.map((t) => ({ label: t, description: t === current ? "current" : undefined })),
+        { placeHolder: "Select a syntax highlighting theme" }
+      );
+      if (picked) await config.update("theme", picked.label, vscode.ConfigurationTarget.Global);
+    }
+  );
+
+  const toggleLineNumbers = vscode.commands.registerCommand(
+    "codeToHtml.toggleLineNumbers",
+    async () => {
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const current = config.get<boolean>("lineNumbers", false);
+      await config.update("lineNumbers", !current, vscode.ConfigurationTarget.Global);
+      vscode.window.showInformationMessage(`Line numbers ${!current ? "enabled" : "disabled"}`);
+    }
+  );
+
+  const selectFilePath = vscode.commands.registerCommand(
+    "codeToHtml.selectFilePath",
+    async () => {
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const current = config.get<string>("showFilePath", "filename");
+      const options = ["filename", "relative", "absolute", "none"] as const;
+      const picked = await vscode.window.showQuickPick(
+        options.map((o) => ({ label: o, description: o === current ? "current" : undefined })),
+        { placeHolder: "Select file path display mode" }
+      );
+      if (picked) await config.update("showFilePath", picked.label, vscode.ConfigurationTarget.Global);
+    }
+  );
+
   const configWatcher = vscode.workspace.onDidChangeConfiguration((e) => {
     if (e.affectsConfiguration("codeToHtml.theme")) {
       resetHighlighter();
     }
   });
 
-  context.subscriptions.push(cmd, configWatcher);
+  context.subscriptions.push(cmd, selectTheme, toggleLineNumbers, selectFilePath, configWatcher);
 }
 
 export function deactivate() {

@@ -84,11 +84,9 @@ export async function buildHtml(
       highlighted = addLineNumbers(highlighted);
     }
 
-    const displayName = getDisplayName(
-      file.absolutePath,
-      options.showFilePath,
-      options.workspaceRoot
-    );
+    const displayName = files.length > 1
+      ? getDisplayName(file.absolutePath, options.showFilePath, options.workspaceRoot)
+      : null;
 
     if (displayName) {
       parts.push(
