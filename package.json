@@ -1,6 +1,6 @@
 {
   "name": "vscode-code-to-html",
-  "displayName": "VSCode Extension: Code to HTML",
+  "displayName": "Code to HTML",
   "description": "Copy syntax-highlighted code as HTML for blog posts, forum submissions and more!",
   "version": "0.0.1",
   "author": {
@@ -9,11 +9,15 @@
   },
   "publisher": "bret",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BretCameron/vscode-code-to-html"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other"
+    "Formatters"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
@@ -43,6 +47,16 @@
         "command": "codeToHtml.toggleBorder",
         "title": "Toggle Border",
         "category": "Code to HTML"
+      },
+      {
+        "command": "codeToHtml.selectLanguage",
+        "title": "Select Language Override",
+        "category": "Code to HTML"
+      },
+      {
+        "command": "codeToHtml.previewAsHtml",
+        "title": "Preview as HTML",
+        "category": "Code to HTML"
       }
     ],
     "menus": {
@@ -56,6 +70,10 @@
       "editor/context": [
         {
           "command": "codeToHtml.copyAsHtml",
+          "group": "9_cutcopypaste"
+        },
+        {
+          "command": "codeToHtml.previewAsHtml",
           "group": "9_cutcopypaste"
         }
       ]
@@ -75,16 +93,60 @@
           "type": "string",
           "default": "github-dark",
           "enum": [
-            "github-dark",
-            "github-light",
+            "andromeeda",
+            "aurora-x",
+            "ayu-dark",
+            "catppuccin-frappe",
+            "catppuccin-latte",
+            "catppuccin-macchiato",
+            "catppuccin-mocha",
+            "dark-plus",
             "dracula",
+            "dracula-soft",
+            "everforest-dark",
+            "everforest-light",
+            "github-dark",
+            "github-dark-default",
+            "github-dark-dimmed",
+            "github-dark-high-contrast",
+            "github-light",
+            "github-light-default",
+            "github-light-high-contrast",
+            "houston",
+            "kanagawa-dragon",
+            "kanagawa-lotus",
+            "kanagawa-wave",
+            "laserwave",
+            "light-plus",
+            "material-theme",
+            "material-theme-darker",
+            "material-theme-lighter",
+            "material-theme-ocean",
+            "material-theme-palenight",
+            "min-dark",
+            "min-light",
+            "monokai",
+            "night-owl",
             "nord",
             "one-dark-pro",
-            "monokai",
+            "one-light",
+            "plastic",
+            "poimandres",
+            "red",
+            "rose-pine",
+            "rose-pine-dawn",
+            "rose-pine-moon",
+            "slack-dark",
+            "slack-ochin",
+            "snazzy-light",
             "solarized-dark",
             "solarized-light",
-            "night-owl",
-            "catppuccin-mocha"
+            "synthwave-84",
+            "tokyo-night",
+            "vesper",
+            "vitesse-black",
+            "vitesse-dark",
+            "vitesse-light"
           ],
           "description": "Syntax highlighting theme"
         },
@@ -97,6 +159,11 @@
           "type": "boolean",
           "default": false,
           "description": "Add a light grey border around code blocks"
+        },
+        "codeToHtml.languageOverride": {
+          "type": "string",
+          "default": "auto",
+          "description": "Override auto-detected language (use a Shiki language ID, or \"auto\")"
         },
         "codeToHtml.showFilePath": {
           "type": "string",
@@ -115,7 +182,7 @@
   "scripts": {
     "build": "node esbuild.js",
     "watch": "node esbuild.js --watch",
-    "package": "npx @vscode/vsce package"
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/node": "^25.2.3",

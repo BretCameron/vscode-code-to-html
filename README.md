@@ -2,22 +2,26 @@
 
 Copy syntax-highlighted code as HTML — for blog posts, forums, emails, docs and more.
 
-Right-click any file (or multiple files) in the Explorer and select **Copy as HTML**. The syntax-highlighted HTML is copied to your clipboard, ready to paste.
+Right-click any file (or multiple files) in the Explorer and select **Copy as HTML**. You can also use the keyboard shortcut or command palette.
 
 ## Features
 
 - **Syntax highlighting** powered by [Shiki](https://shiki.matsu.io/) — the same engine behind VS Code's syntax highlighting
 - **300+ languages** including TypeScript, Python, Rust, Go, C++, Ruby, Shell, and many more
+- **54 color themes** — all built-in Shiki themes, loaded on demand
 - **Multiple files** — select several files at once to copy them all in one block
-- **10 color themes** — GitHub Dark/Light, Dracula, Nord, One Dark Pro, Monokai, Solarized Dark/Light, Night Owl, Catppuccin Mocha
 - **Optional line numbers** with proper alignment and non-selectable styling
+- **Line number offset** — selections preserve their original editor line numbers
 - **File path headers** — show the filename, relative path, absolute path, or nothing above each code block
+- **Language override** — force a specific language instead of auto-detection
+- **Live preview** — preview the rendered HTML in a webview before copying
 
 ## Usage
 
-1. In the Explorer sidebar, right-click a file (or select multiple files)
-2. Click **Copy as HTML**
-3. Paste the HTML wherever you need it
+- **Explorer**: Right-click a file (or select multiple) → **Copy as HTML**
+- **Editor**: Right-click → **Copy as HTML**, or use the keyboard shortcut
+- **Command Palette**: `Cmd+Shift+P` → "Code to HTML: Copy as HTML"
+- **Keyboard shortcut**: `Cmd+Shift+H` (Mac) / `Ctrl+Shift+H` (Windows/Linux)
 
 Binary files and files over 1 MB are automatically skipped.
 
@@ -25,9 +29,11 @@ Binary files and files over 1 MB are automatically skipped.
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `codeToHtml.theme` | `github-dark` | Color theme. Options: `github-dark`, `github-light`, `dracula`, `nord`, `one-dark-pro`, `monokai`, `solarized-dark`, `solarized-light`, `night-owl`, `catppuccin-mocha` |
+| `codeToHtml.theme` | `github-dark` | Color theme (54 Shiki themes available) |
 | `codeToHtml.lineNumbers` | `false` | Include line numbers in the output |
+| `codeToHtml.border` | `false` | Add a light grey border around code blocks |
 | `codeToHtml.showFilePath` | `filename` | File path display above each code block. Options: `filename`, `relative`, `absolute`, `none` |
+| `codeToHtml.languageOverride` | `auto` | Override auto-detected language. Set to a Shiki language ID or `auto` |
 
 ## Supported Languages
 

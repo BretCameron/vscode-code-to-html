@@ -1,8 +1,19 @@
 import * as vscode from "vscode";
 import * as fs from "fs/promises";
 import type { BundledTheme } from "shiki";
-import { resetHighlighter, THEMES } from "./highlighter.js";
+import { resetHighlighter, THEMES, ALL_LANG_IDS } from "./highlighter.js";
 import { buildHtml, type BuildOptions, type FileEntry } from "./html-builder.js";
+import { showPreview } from "./preview.js";
+
+function readConfig(config: vscode.WorkspaceConfiguration): BuildOptions {
+  return {
+    theme: config.get<string>("theme", "github-dark") as BundledTheme,
+    lineNumbers: config.get<boolean>("lineNumbers", false),
+    border: config.get<boolean>("border", false),
+    showFilePath: config.get<BuildOptions["showFilePath"]>("showFilePath", "filename"),
+    languageOverride: config.get<string>("languageOverride", "auto"),
+  };
+}
 
 async function copyFromEditor(
   config: vscode.WorkspaceConfiguration,
@@ -14,10 +25,7 @@ async function copyFromEditor(
     return;
   }
 
-  const theme = config.get<string>("theme", "github-dark") as BundledTheme;
-  const lineNumbers = config.get<boolean>("lineNumbers", false);
-  const border = config.get<boolean>("border", false);
-  const showFilePath = config.get<BuildOptions["showFilePath"]>("showFilePath", "filename");
+  const options = { ...readConfig(config), workspaceRoot };
 
   const selection = editor.selection;
   const hasSelection = !selection.isEmpty;
@@ -26,9 +34,10 @@ async function copyFromEditor(
     : editor.document.getText();
 
   const filePath = editor.document.uri.fsPath;
-  const files: FileEntry[] = [{ absolutePath: filePath, content }];
+  const startLine = hasSelection ? selection.start.line + 1 : undefined;
+  const files: FileEntry[] = [{ absolutePath: filePath, content, startLine }];
 
-  const html = await buildHtml(files, { theme, lineNumbers, border, showFilePath, workspaceRoot });
+  const html = await buildHtml(files, options);
   await vscode.env.clipboard.writeText(html);
 
   const what = hasSelection ? "selection" : "file";
@@ -40,10 +49,7 @@ async function copyFromExplorer(
   config: vscode.WorkspaceConfiguration,
   workspaceRoot: string | undefined
 ): Promise<void> {
-  const theme = config.get<string>("theme", "github-dark") as BundledTheme;
-  const lineNumbers = config.get<boolean>("lineNumbers", false);
-  const border = config.get<boolean>("border", false);
-  const showFilePath = config.get<BuildOptions["showFilePath"]>("showFilePath", "filename");
+  const options = { ...readConfig(config), workspaceRoot };
 
   const files: FileEntry[] = [];
   const skipped: string[] = [];
@@ -67,7 +73,7 @@ async function copyFromExplorer(
     return;
   }
 
-  const html = await buildHtml(files, { theme, lineNumbers, border, showFilePath, workspaceRoot });
+  const html = await buildHtml(files, options);
   await vscode.env.clipboard.writeText(html);
 
   let msg = `Copied ${files.length} file(s) as HTML`;
@@ -145,13 +151,55 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const configWatcher = vscode.workspace.onDidChangeConfiguration((e) => {
-    if (e.affectsConfiguration("codeToHtml.theme")) {
-      resetHighlighter();
+  const selectLanguage = vscode.commands.registerCommand(
+    "codeToHtml.selectLanguage",
+    async () => {
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const current = config.get<string>("languageOverride", "auto");
+      const items = [
+        { label: "auto", description: current === "auto" ? "current" : undefined },
+        ...ALL_LANG_IDS.map((l) => ({ label: l, description: l === current ? "current" : undefined })),
+      ];
+      const picked = await vscode.window.showQuickPick(items, {
+        placeHolder: "Select language (auto = detect from file extension)",
+      });
+      if (picked) await config.update("languageOverride", picked.label, vscode.ConfigurationTarget.Global);
     }
-  });
+  );
 
-  context.subscriptions.push(cmd, selectTheme, toggleLineNumbers, toggleBorder, selectFilePath, configWatcher);
+  const previewCmd = vscode.commands.registerCommand(
+    "codeToHtml.previewAsHtml",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showWarningMessage("No active editor.");
+        return;
+      }
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+      const options = { ...readConfig(config), workspaceRoot };
+
+      const selection = editor.selection;
+      const hasSelection = !selection.isEmpty;
+      const content = hasSelection
+        ? editor.document.getText(selection)
+        : editor.document.getText();
+
+      const filePath = editor.document.uri.fsPath;
+      const startLine = hasSelection ? selection.start.line + 1 : undefined;
+      const files: FileEntry[] = [{ absolutePath: filePath, content, startLine }];
+
+      try {
+        const html = await buildHtml(files, options);
+        showPreview(html);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err);
+        vscode.window.showErrorMessage(`Code to HTML preview failed: ${errMsg}`);
+      }
+    }
+  );
+
+  context.subscriptions.push(cmd, selectTheme, toggleLineNumbers, toggleBorder, selectFilePath, selectLanguage, previewCmd);
 }
 
 export function deactivate() {

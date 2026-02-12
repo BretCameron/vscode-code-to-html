@@ -2,39 +2,46 @@ import * as path from "path";
 import {
   createHighlighter,
   bundledLanguages,
+  bundledThemes,
   type Highlighter,
   type BundledLanguage,
   type BundledTheme,
 } from "shiki";
+import { escapeHtml } from "./html-builder.js";
 
-const ALL_LANG_IDS = Object.keys(bundledLanguages) as BundledLanguage[];
+export const ALL_LANG_IDS = Object.keys(bundledLanguages) as BundledLanguage[];
 
-export const THEMES: BundledTheme[] = [
-  "github-dark",
-  "github-light",
-  "dracula",
-  "nord",
-  "one-dark-pro",
-  "monokai",
-  "solarized-dark",
-  "solarized-light",
-  "night-owl",
-  "catppuccin-mocha",
-];
+export const THEMES = Object.keys(bundledThemes) as BundledTheme[];
+
+const DEFAULT_THEME: BundledTheme = "github-dark";
 
 let highlighter: Highlighter | null = null;
 
-export async function getHighlighter(): Promise<Highlighter> {
+async function getHighlighter(): Promise<Highlighter> {
   if (!highlighter) {
     highlighter = await createHighlighter({
-      themes: THEMES,
-      langs: ALL_LANG_IDS,
+      themes: [DEFAULT_THEME],
+      langs: [],
     });
   }
   return highlighter;
 }
 
-export async function resetHighlighter(): Promise<void> {
+async function ensureTheme(hl: Highlighter, theme: BundledTheme): Promise<void> {
+  const loaded = hl.getLoadedThemes();
+  if (!loaded.includes(theme)) {
+    await hl.loadTheme(theme);
+  }
+}
+
+async function ensureLang(hl: Highlighter, lang: BundledLanguage): Promise<void> {
+  const loaded = hl.getLoadedLanguages();
+  if (!loaded.includes(lang)) {
+    await hl.loadLanguage(lang);
+  }
+}
+
+export function resetHighlighter(): void {
   if (highlighter) {
     highlighter.dispose();
     highlighter = null;
@@ -82,13 +89,12 @@ export async function highlightCode(
   theme: BundledTheme
 ): Promise<string> {
   const hl = await getHighlighter();
+  await ensureTheme(hl, theme);
   if (lang === "plaintext") {
-    // Shiki doesn't handle plaintext well — just wrap in <pre>
-    const escaped = code
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-    return `<pre style="padding:1em;overflow-x:auto"><code>${escaped}</code></pre>`;
+    const bg = hl.getTheme(theme).bg;
+    const escaped = escapeHtml(code);
+    return `<pre class="shiki" style="background-color:${bg};padding:1em;overflow-x:auto"><code>${escaped}</code></pre>`;
   }
+  await ensureLang(hl, lang as BundledLanguage);
   return hl.codeToHtml(code, { lang, theme });
 }

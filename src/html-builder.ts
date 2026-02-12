@@ -5,6 +5,7 @@ import { detectLanguage, highlightCode } from "./highlighter.js";
 export interface FileEntry {
   absolutePath: string;
   content: string;
+  startLine?: number;
 }
 
 export interface BuildOptions {
@@ -13,6 +14,7 @@ export interface BuildOptions {
   border: boolean;
   showFilePath: "filename" | "relative" | "absolute" | "none";
   workspaceRoot?: string;
+  languageOverride?: string;
 }
 
 function getDisplayName(
@@ -44,7 +46,7 @@ function addBorder(html: string): string {
   );
 }
 
-function addLineNumbers(html: string): string {
+function addLineNumbers(html: string, startLine = 1): string {
   // Shiki outputs <pre ...><code>...lines...</code></pre>
   // We inject line numbers by wrapping each line in a table row
   const codeMatch = html.match(
@@ -61,7 +63,7 @@ function addLineNumbers(html: string): string {
 
   const numberedLines = lines
     .map((line, i) => {
-      const num = i + 1;
+      const num = startLine + i;
       return (
         `<tr>` +
         `<td style="border:none;padding:0 1em 0 0;text-align:right;user-select:none;opacity:0.5;white-space:nowrap;line-height:inherit;font-size:inherit">${num}</td>` +
@@ -86,20 +88,20 @@ export async function buildHtml(
   const parts: string[] = [];
 
   for (const file of files) {
-    const lang = detectLanguage(file.absolutePath);
+    const lang = options.languageOverride && options.languageOverride !== "auto"
+      ? options.languageOverride
+      : detectLanguage(file.absolutePath);
     let highlighted = await highlightCode(file.content, lang, options.theme);
 
     if (options.lineNumbers) {
-      highlighted = addLineNumbers(highlighted);
+      highlighted = addLineNumbers(highlighted, file.startLine);
     }
 
     if (options.border) {
       highlighted = addBorder(highlighted);
     }
 
-    const displayName = files.length > 1
-      ? getDisplayName(file.absolutePath, options.showFilePath, options.workspaceRoot)
-      : null;
+    const displayName = getDisplayName(file.absolutePath, options.showFilePath, options.workspaceRoot);
 
     if (displayName) {
       parts.push(
@@ -112,7 +114,7 @@ export async function buildHtml(
   return `<div>\n${parts.join("\n")}\n</div>`;
 }
 
-function escapeHtml(s: string): string {
+export function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
