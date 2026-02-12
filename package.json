@@ -1,7 +1,7 @@
 {
   "name": "vscode-code-to-html",
   "displayName": "VSCode Extension: Code to HTML",
-  "description": "Copy syntax-highlighted code as HTML for forum submissions",
+  "description": "Copy syntax-highlighted code as HTML for blog posts, forum submissions and more!",
   "version": "0.0.1",
   "author": {
     "name": "Bret Cameron",
