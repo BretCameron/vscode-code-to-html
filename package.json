@@ -1,6 +1,6 @@
 {
-  "name": "code-to-html",
-  "displayName": "Code to HTML",
+  "name": "vscode-code-to-html",
+  "displayName": "VSCode Extension: Code to HTML",
   "description": "Copy syntax-highlighted code as HTML for forum submissions",
   "version": "0.0.1",
   "author": {
@@ -21,7 +21,7 @@
     "commands": [
       {
         "command": "codeToHtml.copyAsHtml",
-        "title": "Copy as HTML"
+        "title": "Code to HTML: Copy as HTML"
       }
     ],
     "menus": {
