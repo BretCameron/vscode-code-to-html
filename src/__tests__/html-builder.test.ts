@@ -32,7 +32,7 @@ describe("html-builder", () => {
     it("wraps output in a div", async () => {
       const files: FileEntry[] = [{ absolutePath: "/foo/test.ts", content: "const x = 1;" }];
       const html = await buildHtml(files, defaultOptions);
-      expect(html).toMatch(/^<div>\n/);
+      expect(html).toMatch(/^<div style="[^"]*max-width:100%/);
       expect(html).toMatch(/<\/div>$/);
     });
 

@@ -111,7 +111,7 @@ export async function buildHtml(
     parts.push(highlighted);
   }
 
-  return `<div>\n${parts.join("\n")}\n</div>`;
+  return `<div style="max-width:100%;overflow:auto">\n${parts.join("\n")}\n</div>`;
 }
 
 export function escapeHtml(s: string): string {
