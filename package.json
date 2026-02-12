@@ -1,0 +1,85 @@
+{
+  "name": "code-to-html",
+  "displayName": "Code to HTML",
+  "description": "Copy syntax-highlighted code as HTML for forum submissions",
+  "version": "0.0.1",
+  "author": {
+    "name": "Bret Cameron",
+    "url": "https://bretcameron.com/"
+  },
+  "publisher": "bret",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeToHtml.copyAsHtml",
+        "title": "Copy as HTML"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "codeToHtml.copyAsHtml",
+          "group": "5_cutcopypaste",
+          "when": "resourceScheme == file"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Code to HTML",
+      "properties": {
+        "codeToHtml.theme": {
+          "type": "string",
+          "default": "github-dark",
+          "enum": [
+            "github-dark",
+            "github-light",
+            "nord",
+            "one-dark-pro",
+            "dracula"
+          ],
+          "description": "Syntax highlighting theme"
+        },
+        "codeToHtml.lineNumbers": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include line numbers"
+        },
+        "codeToHtml.showFilePath": {
+          "type": "string",
+          "default": "filename",
+          "enum": [
+            "filename",
+            "relative",
+            "absolute",
+            "none"
+          ],
+          "description": "File path display in headers"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "npx @vscode/vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "shiki": "^1.24.0"
+  }
+}
