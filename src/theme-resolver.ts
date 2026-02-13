@@ -15,7 +15,7 @@ interface ThemeContribution {
 
 export function findThemeContribution(
   extensions: ReadonlyArray<ExtensionInfo>,
-  themeId: string
+  themeId: string,
 ): ThemeContribution | undefined {
   for (const ext of extensions) {
     const themes = ext.packageJSON?.contributes?.themes;
@@ -41,14 +41,14 @@ export function mergeThemes(parent: any, child: any): any {
     ...parent,
     ...child,
     colors: { ...parent.colors, ...child.colors },
-    tokenColors: [
-      ...(parent.tokenColors ?? []),
-      ...(child.tokenColors ?? []),
-    ],
+    tokenColors: [...(parent.tokenColors ?? []), ...(child.tokenColors ?? [])],
   };
 }
 
-export async function loadThemeFromFile(filePath: string, depth = 0): Promise<ThemeRegistrationRaw> {
+export async function loadThemeFromFile(
+  filePath: string,
+  depth = 0,
+): Promise<ThemeRegistrationRaw> {
   if (depth > 10) throw new Error(`Theme include chain too deep: ${filePath}`);
   const content = await fs.readFile(filePath, "utf-8");
   const theme = parseThemeJson(content);
@@ -65,7 +65,9 @@ export async function loadThemeFromFile(filePath: string, depth = 0): Promise<Th
 
 export async function resolveActiveTheme(): Promise<ThemeRegistrationRaw | null> {
   const vscode = await import("vscode");
-  const themeId = vscode.workspace.getConfiguration("workbench").get<string>("colorTheme");
+  const themeId = vscode.workspace
+    .getConfiguration("workbench")
+    .get<string>("colorTheme");
   if (!themeId) return null;
 
   const contribution = findThemeContribution(vscode.extensions.all, themeId);
