@@ -20,7 +20,7 @@ Right-click any file (or multiple files) in the Explorer and select **Copy as HT
 
 - **Explorer**: Right-click a file (or select multiple) → **Copy as HTML**
 - **Editor**: Right-click → **Copy as HTML**, or use the keyboard shortcut
-- **Command Palette**: `Cmd+Shift+P` → "Code to HTML: Copy as HTML"
+- **Command Palette**: `Cmd+Shift+P` → "Code to HTML: Copy as HTML", "Preview as HTML", plus quick commands for Select Theme, Toggle Line Numbers, Toggle Border, Select File Path Display, and Select Language Override
 - **Keyboard shortcut**: `Cmd+Shift+H` (Mac) / `Ctrl+Shift+H` (Windows/Linux)
 
 Binary files and files over 1 MB are automatically skipped.
