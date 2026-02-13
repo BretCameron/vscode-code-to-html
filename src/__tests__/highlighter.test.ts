@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { detectLanguage, highlightCode, resetHighlighter, THEMES, ALL_LANG_IDS } from "../highlighter.js";
+import { detectLanguage, highlightCode, resetHighlighter, THEMES, ALL_LANG_IDS, type ThemeOption } from "../highlighter.js";
 
 afterAll(() => {
   resetHighlighter();
@@ -81,6 +81,36 @@ describe("highlighter", () => {
       const html = await highlightCode("<script>alert('xss')</script>", "plaintext", "github-dark");
       expect(html).toContain("&lt;script&gt;");
       expect(html).not.toContain("<script>");
+    });
+  });
+
+  describe("highlightCode with custom theme", () => {
+    it("accepts a ThemeRegistrationRaw object", async () => {
+      const customTheme: ThemeOption = {
+        name: "test-custom-theme",
+        colors: { "editor.background": "#1a1a2e" },
+        settings: [],
+        tokenColors: [
+          { scope: ["keyword"], settings: { foreground: "#e94560" } },
+          { scope: ["string"], settings: { foreground: "#0f3460" } },
+        ],
+      };
+      const html = await highlightCode("const x = 1;", "typescript", customTheme);
+      expect(html).toContain("<pre");
+      expect(html).toContain("<code");
+      expect(html).toContain("const");
+    });
+
+    it("uses custom theme background for plaintext", async () => {
+      const customTheme: ThemeOption = {
+        name: "test-plaintext-theme",
+        colors: { "editor.background": "#abcdef" },
+        tokenColors: [],
+        settings: [{ settings: { background: "#abcdef" } }],
+      };
+      const html = await highlightCode("hello", "plaintext", customTheme);
+      expect(html).toContain("background-color:");
+      expect(html).toContain("hello");
     });
   });
 });
