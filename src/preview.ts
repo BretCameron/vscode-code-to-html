@@ -51,6 +51,7 @@ function wrapHtml(html: string): string {
     background: var(--vscode-button-hoverBackground, #005f9e);
   }
   .preview { margin-top: 8px; }
+  .preview pre * { background: transparent !important; }
 </style>
 </head>
 <body>
