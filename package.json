@@ -18,7 +18,20 @@
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Formatters"
+    "Formatters",
+    "Other"
+  ],
+  "keywords": [
+    "html",
+    "syntax highlighting",
+    "copy",
+    "code",
+    "clipboard",
+    "blog",
+    "shiki",
+    "export",
+    "paste",
+    "snippet"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
