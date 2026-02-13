@@ -61,3 +61,20 @@ export async function loadThemeFromFile(filePath: string): Promise<ThemeRegistra
 
   return theme;
 }
+
+export async function resolveActiveTheme(): Promise<ThemeRegistrationRaw | null> {
+  const vscode = await import("vscode");
+  const themeId = vscode.workspace.getConfiguration("workbench").get<string>("colorTheme");
+  if (!themeId) return null;
+
+  const contribution = findThemeContribution(vscode.extensions.all, themeId);
+  if (!contribution) return null;
+
+  try {
+    const theme = await loadThemeFromFile(contribution.themePath);
+    if (!theme.name) theme.name = themeId;
+    return theme;
+  } catch {
+    return null;
+  }
+}
