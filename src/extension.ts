@@ -314,12 +314,29 @@ export function activate(context: vscode.ExtensionContext) {
     },
   );
 
+  const toggleWordWrap = vscode.commands.registerCommand(
+    "codeToHtml.toggleWordWrap",
+    async () => {
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const current = config.get<boolean>("wordWrap", true);
+      await config.update(
+        "wordWrap",
+        !current,
+        vscode.ConfigurationTarget.Global,
+      );
+      vscode.window.showInformationMessage(
+        `Word wrap ${!current ? "enabled" : "disabled"}`,
+      );
+    },
+  );
+
   context.subscriptions.push(
     cmd,
     explorerCmd,
     selectTheme,
     toggleLineNumbers,
     toggleBorder,
+    toggleWordWrap,
     selectFilePath,
     selectLanguage,
     previewCmd,

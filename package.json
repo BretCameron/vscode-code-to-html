@@ -50,6 +50,11 @@
         "category": "Code to HTML"
       },
       {
+        "command": "codeToHtml.toggleWordWrap",
+        "title": "Toggle Word Wrap",
+        "category": "Code to HTML"
+      },
+      {
         "command": "codeToHtml.selectLanguage",
         "title": "Select Language Override",
         "category": "Code to HTML"
