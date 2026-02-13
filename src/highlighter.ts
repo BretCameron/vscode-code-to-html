@@ -6,8 +6,11 @@ import {
   type Highlighter,
   type BundledLanguage,
   type BundledTheme,
+  type ThemeRegistrationRaw,
 } from "shiki";
 import { escapeHtml } from "./html-builder.js";
+
+export type ThemeOption = BundledTheme | ThemeRegistrationRaw;
 
 export const ALL_LANG_IDS = Object.keys(bundledLanguages) as BundledLanguage[];
 
@@ -86,15 +89,24 @@ export function detectLanguage(
 export async function highlightCode(
   code: string,
   lang: string,
-  theme: BundledTheme
+  theme: ThemeOption
 ): Promise<string> {
   const hl = await getHighlighter();
-  await ensureTheme(hl, theme);
+
+  let themeName: string;
+  if (typeof theme === "string") {
+    await ensureTheme(hl, theme);
+    themeName = theme;
+  } else {
+    await hl.loadTheme(theme);
+    themeName = theme.name ?? "custom";
+  }
+
   if (lang === "plaintext") {
-    const bg = hl.getTheme(theme).bg;
+    const bg = hl.getTheme(themeName).bg;
     const escaped = escapeHtml(code);
     return `<pre class="shiki" style="background-color:${bg};padding:1em;overflow-x:auto"><code>${escaped}</code></pre>`;
   }
   await ensureLang(hl, lang as BundledLanguage);
-  return hl.codeToHtml(code, { lang, theme });
+  return hl.codeToHtml(code, { lang, theme: themeName });
 }
