@@ -1,5 +1,5 @@
 import * as path from "path";
-import type { BundledTheme } from "shiki";
+import type { ThemeOption } from "./highlighter.js";
 import { detectLanguage, highlightCode } from "./highlighter.js";
 
 export interface FileEntry {
@@ -9,7 +9,7 @@ export interface FileEntry {
 }
 
 export interface BuildOptions {
-  theme: BundledTheme;
+  theme: ThemeOption;
   lineNumbers: boolean;
   border: boolean;
   showFilePath: "filename" | "relative" | "absolute" | "none";
