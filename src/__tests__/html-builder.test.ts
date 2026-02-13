@@ -15,6 +15,7 @@ const defaultOptions: BuildOptions = {
   theme: "github-dark",
   lineNumbers: false,
   border: false,
+  wordWrap: true,
   showFilePath: "filename",
 };
 

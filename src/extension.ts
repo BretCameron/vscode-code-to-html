@@ -31,6 +31,7 @@ function readConfig(
   return {
     lineNumbers: config.get<boolean>("lineNumbers", false),
     border: config.get<boolean>("border", false),
+    wordWrap: config.get<boolean>("wordWrap", true),
     showFilePath: config.get<BuildOptions["showFilePath"]>(
       "showFilePath",
       "filename",
