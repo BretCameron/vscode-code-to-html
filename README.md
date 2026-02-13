@@ -29,9 +29,10 @@ Binary files and files over 1 MB are automatically skipped.
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `codeToHtml.theme` | `github-dark` | Color theme (54 Shiki themes available) |
+| `codeToHtml.theme` | `active` | Color theme (`active` uses your current VS Code theme, or pick from 54 built-in Shiki themes) |
 | `codeToHtml.lineNumbers` | `false` | Include line numbers in the output |
 | `codeToHtml.border` | `false` | Add a light grey border around code blocks |
+| `codeToHtml.wordWrap` | `true` | Wrap long lines instead of horizontal scrolling |
 | `codeToHtml.showFilePath` | `filename` | File path display above each code block. Options: `filename`, `relative`, `absolute`, `none` |
 | `codeToHtml.languageOverride` | `auto` | Override auto-detected language. Set to a Shiki language ID or `auto` |
 

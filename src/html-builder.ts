@@ -1,5 +1,5 @@
 import * as path from "path";
-import type { BundledTheme } from "shiki";
+import type { ThemeOption } from "./highlighter.js";
 import { detectLanguage, highlightCode } from "./highlighter.js";
 
 export interface FileEntry {
@@ -9,9 +9,10 @@ export interface FileEntry {
 }
 
 export interface BuildOptions {
-  theme: BundledTheme;
+  theme: ThemeOption;
   lineNumbers: boolean;
   border: boolean;
+  wordWrap: boolean;
   showFilePath: "filename" | "relative" | "absolute" | "none";
   workspaceRoot?: string;
   languageOverride?: string;
@@ -20,7 +21,7 @@ export interface BuildOptions {
 function getDisplayName(
   absolutePath: string,
   mode: BuildOptions["showFilePath"],
-  workspaceRoot?: string
+  workspaceRoot?: string,
 ): string | null {
   switch (mode) {
     case "none":
@@ -38,11 +39,22 @@ function getDisplayName(
   }
 }
 
+function stripClasses(html: string): string {
+  return html.replace(/ class="[^"]*"/g, "").replace(/ tabindex="[^"]*"/g, "");
+}
+
+function addWordWrap(html: string): string {
+  return html.replace(
+    /(<pre[^>]*style=")/,
+    "$1white-space:pre-wrap;word-wrap:break-word;",
+  );
+}
+
 function addBorder(html: string): string {
   // Shiki's <pre> already has a style attribute — inject border into it
   return html.replace(
     /(<pre[^>]*style=")/,
-    '$1border:1px solid #d0d7de;border-radius:6px;'
+    "$1border:1px solid #d0d7de;border-radius:6px;",
   );
 }
 
@@ -50,7 +62,7 @@ function addLineNumbers(html: string, startLine = 1): string {
   // Shiki outputs <pre ...><code>...lines...</code></pre>
   // We inject line numbers by wrapping each line in a table row
   const codeMatch = html.match(
-    /(<pre[^>]*><code[^>]*>)([\s\S]*?)(<\/code><\/pre>)/
+    /(<pre[^>]*><code[^>]*>)([\s\S]*?)(<\/code><\/pre>)/,
   );
   if (!codeMatch) return html;
 
@@ -83,16 +95,23 @@ function addLineNumbers(html: string, startLine = 1): string {
 
 export async function buildHtml(
   files: FileEntry[],
-  options: BuildOptions
+  options: BuildOptions,
 ): Promise<string> {
   const parts: string[] = [];
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const lang = options.languageOverride && options.languageOverride !== "auto"
-      ? options.languageOverride
-      : detectLanguage(file.absolutePath);
-    let highlighted = await highlightCode(file.content, lang, options.theme);
+    const lang =
+      options.languageOverride && options.languageOverride !== "auto"
+        ? options.languageOverride
+        : detectLanguage(file.absolutePath);
+    let highlighted = stripClasses(
+      await highlightCode(file.content, lang, options.theme),
+    );
+
+    if (options.wordWrap) {
+      highlighted = addWordWrap(highlighted);
+    }
 
     if (options.lineNumbers) {
       highlighted = addLineNumbers(highlighted, file.startLine);
@@ -102,12 +121,16 @@ export async function buildHtml(
       highlighted = addBorder(highlighted);
     }
 
-    const displayName = getDisplayName(file.absolutePath, options.showFilePath, options.workspaceRoot);
+    const displayName = getDisplayName(
+      file.absolutePath,
+      options.showFilePath,
+      options.workspaceRoot,
+    );
 
     if (displayName) {
       const topMargin = i === 0 ? "0" : "1em";
       parts.push(
-        `<p style="font-family:inherit;margin:${topMargin} 0 0.25em"><strong>${escapeHtml(displayName)}</strong></p>`
+        `<p style="font-family:inherit;margin:${topMargin} 0 0.25em"><strong>${escapeHtml(displayName)}</strong></p>`,
       );
     }
     parts.push(highlighted);
@@ -117,8 +140,5 @@ export async function buildHtml(
 }
 
 export function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
