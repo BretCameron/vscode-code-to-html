@@ -184,6 +184,11 @@
           "default": "auto",
           "description": "Override auto-detected language (use a Shiki language ID, or \"auto\")"
         },
+        "codeToHtml.wordWrap": {
+          "type": "boolean",
+          "default": true,
+          "description": "Wrap long lines instead of horizontal scrolling"
+        },
         "codeToHtml.showFilePath": {
           "type": "string",
           "default": "filename",

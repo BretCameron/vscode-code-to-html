@@ -12,6 +12,7 @@ export interface BuildOptions {
   theme: ThemeOption;
   lineNumbers: boolean;
   border: boolean;
+  wordWrap: boolean;
   showFilePath: "filename" | "relative" | "absolute" | "none";
   workspaceRoot?: string;
   languageOverride?: string;
@@ -40,6 +41,13 @@ function getDisplayName(
 
 function stripClasses(html: string): string {
   return html.replace(/ class="[^"]*"/g, "").replace(/ tabindex="[^"]*"/g, "");
+}
+
+function addWordWrap(html: string): string {
+  return html.replace(
+    /(<pre[^>]*style=")/,
+    "$1white-space:pre-wrap;word-wrap:break-word;",
+  );
 }
 
 function addBorder(html: string): string {
@@ -100,6 +108,10 @@ export async function buildHtml(
     let highlighted = stripClasses(
       await highlightCode(file.content, lang, options.theme),
     );
+
+    if (options.wordWrap) {
+      highlighted = addWordWrap(highlighted);
+    }
 
     if (options.lineNumbers) {
       highlighted = addLineNumbers(highlighted, file.startLine);
