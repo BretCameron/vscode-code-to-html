@@ -1,5 +1,7 @@
 import * as path from "path";
+import * as fs from "fs/promises";
 import { parse as parseJsonc } from "jsonc-parser";
+import type { ThemeRegistrationRaw } from "shiki";
 
 interface ExtensionInfo {
   extensionPath: string;
@@ -44,4 +46,18 @@ export function mergeThemes(parent: any, child: any): any {
       ...(child.tokenColors ?? []),
     ],
   };
+}
+
+export async function loadThemeFromFile(filePath: string): Promise<ThemeRegistrationRaw> {
+  const content = await fs.readFile(filePath, "utf-8");
+  const theme = parseThemeJson(content);
+
+  if (theme.include) {
+    const includePath = path.resolve(path.dirname(filePath), theme.include);
+    const parent = await loadThemeFromFile(includePath);
+    const { include: _, ...childWithoutInclude } = theme;
+    return mergeThemes(parent, childWithoutInclude);
+  }
+
+  return theme;
 }
