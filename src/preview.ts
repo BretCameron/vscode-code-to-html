@@ -13,7 +13,7 @@ export function showPreview(html: string): void {
     "codeToHtmlPreview",
     "Code to HTML Preview",
     vscode.ViewColumn.Beside,
-    { enableScripts: true }
+    { enableScripts: true },
   );
 
   panel.webview.html = wrapHtml(html);

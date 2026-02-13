@@ -30,14 +30,20 @@ async function getHighlighter(): Promise<Highlighter> {
   return highlighter;
 }
 
-async function ensureTheme(hl: Highlighter, theme: BundledTheme): Promise<void> {
+async function ensureTheme(
+  hl: Highlighter,
+  theme: BundledTheme,
+): Promise<void> {
   const loaded = hl.getLoadedThemes();
   if (!loaded.includes(theme)) {
     await hl.loadTheme(theme);
   }
 }
 
-async function ensureLang(hl: Highlighter, lang: BundledLanguage): Promise<void> {
+async function ensureLang(
+  hl: Highlighter,
+  lang: BundledLanguage,
+): Promise<void> {
   const loaded = hl.getLoadedLanguages();
   if (!loaded.includes(lang)) {
     await hl.loadLanguage(lang);
@@ -73,7 +79,7 @@ const EXT_ALIASES: Record<string, BundledLanguage> = {
 };
 
 export function detectLanguage(
-  filePath: string
+  filePath: string,
 ): BundledLanguage | "plaintext" {
   const basename = path.basename(filePath);
   const lower = basename.toLowerCase();
@@ -89,7 +95,7 @@ export function detectLanguage(
 export async function highlightCode(
   code: string,
   lang: string,
-  theme: ThemeOption
+  theme: ThemeOption,
 ): Promise<string> {
   const hl = await getHighlighter();
 

@@ -1,5 +1,12 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { detectLanguage, highlightCode, resetHighlighter, THEMES, ALL_LANG_IDS, type ThemeOption } from "../highlighter.js";
+import {
+  detectLanguage,
+  highlightCode,
+  resetHighlighter,
+  THEMES,
+  ALL_LANG_IDS,
+  type ThemeOption,
+} from "../highlighter.js";
 
 afterAll(() => {
   resetHighlighter();
@@ -64,21 +71,33 @@ describe("highlighter", () => {
 
   describe("highlightCode", () => {
     it("highlights TypeScript code", async () => {
-      const html = await highlightCode('const x = 1;', "typescript", "github-dark");
+      const html = await highlightCode(
+        "const x = 1;",
+        "typescript",
+        "github-dark",
+      );
       expect(html).toContain("<pre");
       expect(html).toContain("<code");
       expect(html).toContain("const");
     });
 
     it("wraps plaintext with themed background", async () => {
-      const html = await highlightCode("hello world", "plaintext", "github-dark");
+      const html = await highlightCode(
+        "hello world",
+        "plaintext",
+        "github-dark",
+      );
       expect(html).toContain("background-color:");
       expect(html).toContain("hello world");
       expect(html).toContain('class="shiki"');
     });
 
     it("escapes HTML in plaintext", async () => {
-      const html = await highlightCode("<script>alert('xss')</script>", "plaintext", "github-dark");
+      const html = await highlightCode(
+        "<script>alert('xss')</script>",
+        "plaintext",
+        "github-dark",
+      );
       expect(html).toContain("&lt;script&gt;");
       expect(html).not.toContain("<script>");
     });
@@ -95,7 +114,11 @@ describe("highlighter", () => {
           { scope: ["string"], settings: { foreground: "#0f3460" } },
         ],
       };
-      const html = await highlightCode("const x = 1;", "typescript", customTheme);
+      const html = await highlightCode(
+        "const x = 1;",
+        "typescript",
+        customTheme,
+      );
       expect(html).toContain("<pre");
       expect(html).toContain("<code");
       expect(html).toContain("const");
