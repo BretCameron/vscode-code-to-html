@@ -1,13 +1,24 @@
 import * as vscode from "vscode";
 import * as fs from "fs/promises";
-import type { BundledTheme } from "shiki";
 import { resetHighlighter, THEMES, ALL_LANG_IDS } from "./highlighter.js";
+import type { ThemeOption } from "./highlighter.js";
 import { buildHtml, type BuildOptions, type FileEntry } from "./html-builder.js";
 import { showPreview } from "./preview.js";
+import { resolveActiveTheme } from "./theme-resolver.js";
 
-function readConfig(config: vscode.WorkspaceConfiguration): BuildOptions {
+async function resolveTheme(config: vscode.WorkspaceConfiguration): Promise<ThemeOption> {
+  const themeSetting = config.get<string>("theme", "active");
+  if (themeSetting === "active") {
+    const resolved = await resolveActiveTheme();
+    if (resolved) return resolved;
+    vscode.window.showWarningMessage("Could not load active VS Code theme, using github-dark.");
+    return "github-dark";
+  }
+  return themeSetting as ThemeOption;
+}
+
+function readConfig(config: vscode.WorkspaceConfiguration): Omit<BuildOptions, "theme"> {
   return {
-    theme: config.get<string>("theme", "github-dark") as BundledTheme,
     lineNumbers: config.get<boolean>("lineNumbers", false),
     border: config.get<boolean>("border", false),
     showFilePath: config.get<BuildOptions["showFilePath"]>("showFilePath", "filename"),
@@ -25,7 +36,8 @@ async function copyFromEditor(
     return;
   }
 
-  const options = { ...readConfig(config), workspaceRoot };
+  const theme = await resolveTheme(config);
+  const options = { ...readConfig(config), theme, workspaceRoot };
 
   const selection = editor.selection;
   const hasSelection = !selection.isEmpty;
@@ -49,7 +61,8 @@ async function copyFromExplorer(
   config: vscode.WorkspaceConfiguration,
   workspaceRoot: string | undefined
 ): Promise<void> {
-  const options = { ...readConfig(config), workspaceRoot };
+  const theme = await resolveTheme(config);
+  const options = { ...readConfig(config), theme, workspaceRoot };
 
   const files: FileEntry[] = [];
   const skipped: string[] = [];
@@ -108,11 +121,14 @@ export function activate(context: vscode.ExtensionContext) {
     "codeToHtml.selectTheme",
     async () => {
       const config = vscode.workspace.getConfiguration("codeToHtml");
-      const current = config.get<string>("theme", "github-dark");
-      const picked = await vscode.window.showQuickPick(
-        THEMES.map((t) => ({ label: t, description: t === current ? "current" : undefined })),
-        { placeHolder: "Select a syntax highlighting theme" }
-      );
+      const current = config.get<string>("theme", "active");
+      const items = [
+        { label: "active", description: current === "active" ? "current" : "Use current VS Code theme" },
+        ...THEMES.map((t) => ({ label: t, description: t === current ? "current" : undefined })),
+      ];
+      const picked = await vscode.window.showQuickPick(items, {
+        placeHolder: "Select a syntax highlighting theme",
+      });
       if (picked) await config.update("theme", picked.label, vscode.ConfigurationTarget.Global);
     }
   );
@@ -203,7 +219,8 @@ export function activate(context: vscode.ExtensionContext) {
       }
       const config = vscode.workspace.getConfiguration("codeToHtml");
       const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-      const options = { ...readConfig(config), workspaceRoot };
+      const theme = await resolveTheme(config);
+      const options = { ...readConfig(config), theme, workspaceRoot };
 
       const selection = editor.selection;
       const hasSelection = !selection.isEmpty;
