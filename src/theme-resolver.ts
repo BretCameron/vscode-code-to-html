@@ -48,13 +48,14 @@ export function mergeThemes(parent: any, child: any): any {
   };
 }
 
-export async function loadThemeFromFile(filePath: string): Promise<ThemeRegistrationRaw> {
+export async function loadThemeFromFile(filePath: string, depth = 0): Promise<ThemeRegistrationRaw> {
+  if (depth > 10) throw new Error(`Theme include chain too deep: ${filePath}`);
   const content = await fs.readFile(filePath, "utf-8");
   const theme = parseThemeJson(content);
 
   if (theme.include) {
     const includePath = path.resolve(path.dirname(filePath), theme.include);
-    const parent = await loadThemeFromFile(includePath);
+    const parent = await loadThemeFromFile(includePath, depth + 1);
     const { include: _, ...childWithoutInclude } = theme;
     return mergeThemes(parent, childWithoutInclude);
   }
@@ -72,8 +73,7 @@ export async function resolveActiveTheme(): Promise<ThemeRegistrationRaw | null>
 
   try {
     const theme = await loadThemeFromFile(contribution.themePath);
-    if (!theme.name) theme.name = themeId;
-    return theme;
+    return theme.name ? theme : { ...theme, name: themeId };
   } catch {
     return null;
   }
