@@ -109,8 +109,9 @@
       "properties": {
         "codeToHtml.theme": {
           "type": "string",
-          "default": "github-dark",
+          "default": "active",
           "enum": [
+            "active",
             "andromeeda",
             "aurora-x",
             "ayu-dark",
@@ -166,7 +167,7 @@
             "vitesse-dark",
             "vitesse-light"
           ],
-          "description": "Syntax highlighting theme"
+          "description": "Syntax highlighting theme (\"active\" uses your current VS Code theme)"
         },
         "codeToHtml.lineNumbers": {
           "type": "boolean",
