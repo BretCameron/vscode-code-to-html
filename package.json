@@ -55,12 +55,23 @@
         "category": "Code to HTML"
       },
       {
+        "command": "codeToHtml.copyAsHtmlFromExplorer",
+        "title": "Copy as HTML (Explorer)",
+        "category": "Code to HTML"
+      },
+      {
         "command": "codeToHtml.previewAsHtml",
         "title": "Preview as HTML",
         "category": "Code to HTML"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "codeToHtml.copyAsHtmlFromExplorer",
+          "when": "false"
+        }
+      ],
       "explorer/context": [
         {
           "command": "codeToHtml.copyAsHtml",
@@ -85,6 +96,12 @@
         "key": "ctrl+shift+h",
         "mac": "cmd+shift+h",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "codeToHtml.copyAsHtmlFromExplorer",
+        "key": "ctrl+shift+h",
+        "mac": "cmd+shift+h",
+        "when": "filesExplorerFocus"
       }
     ],
     "configuration": {

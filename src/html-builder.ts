@@ -87,7 +87,8 @@ export async function buildHtml(
 ): Promise<string> {
   const parts: string[] = [];
 
-  for (const file of files) {
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
     const lang = options.languageOverride && options.languageOverride !== "auto"
       ? options.languageOverride
       : detectLanguage(file.absolutePath);
@@ -104,8 +105,9 @@ export async function buildHtml(
     const displayName = getDisplayName(file.absolutePath, options.showFilePath, options.workspaceRoot);
 
     if (displayName) {
+      const topMargin = i === 0 ? "0" : "1em";
       parts.push(
-        `<p style="font-family:inherit;margin:1em 0 0.25em"><strong>${escapeHtml(displayName)}</strong></p>`
+        `<p style="font-family:inherit;margin:${topMargin} 0 0.25em"><strong>${escapeHtml(displayName)}</strong></p>`
       );
     }
     parts.push(highlighted);

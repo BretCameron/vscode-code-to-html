@@ -167,6 +167,32 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  const explorerCmd = vscode.commands.registerCommand(
+    "codeToHtml.copyAsHtmlFromExplorer",
+    async () => {
+      const config = vscode.workspace.getConfiguration("codeToHtml");
+      const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+
+      try {
+        // Get explorer selection via built-in command (writes paths to clipboard)
+        await vscode.commands.executeCommand("copyFilePath");
+        const clipText = await vscode.env.clipboard.readText();
+        const paths = clipText.split(/\r?\n/).filter(Boolean);
+
+        if (paths.length === 0) {
+          vscode.window.showWarningMessage("No files selected.");
+          return;
+        }
+
+        const uris = paths.map((p) => vscode.Uri.file(p));
+        await copyFromExplorer(uris, config, workspaceRoot);
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err);
+        vscode.window.showErrorMessage(`Code to HTML failed: ${errMsg}`);
+      }
+    }
+  );
+
   const previewCmd = vscode.commands.registerCommand(
     "codeToHtml.previewAsHtml",
     async () => {
@@ -199,7 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  context.subscriptions.push(cmd, selectTheme, toggleLineNumbers, toggleBorder, selectFilePath, selectLanguage, previewCmd);
+  context.subscriptions.push(cmd, explorerCmd, selectTheme, toggleLineNumbers, toggleBorder, selectFilePath, selectLanguage, previewCmd);
 }
 
 export function deactivate() {
