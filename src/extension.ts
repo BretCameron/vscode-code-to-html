@@ -359,6 +359,32 @@ export function activate(context: vscode.ExtensionContext) {
     }
   });
 
+  const previewExplorerCmd = vscode.commands.registerCommand(
+    "codeToHtml.previewAsHtmlFromExplorer",
+    async () => {
+      try {
+        await vscode.commands.executeCommand("copyFilePath");
+        const clipText = await vscode.env.clipboard.readText();
+        const paths = clipText.split(/\r?\n/).filter(Boolean);
+
+        if (paths.length === 0) {
+          vscode.window.showWarningMessage("No files selected.");
+          return;
+        }
+
+        const uris = paths.map((p) => vscode.Uri.file(p));
+        await vscode.commands.executeCommand(
+          "codeToHtml.previewAsHtml",
+          uris[0],
+          uris,
+        );
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err);
+        vscode.window.showErrorMessage(`Code to HTML preview failed: ${errMsg}`);
+      }
+    },
+  );
+
   const toggleWordWrap = vscode.commands.registerCommand(
     "codeToHtml.toggleWordWrap",
     async () => {
@@ -386,6 +412,7 @@ export function activate(context: vscode.ExtensionContext) {
     selectFilePath,
     selectLanguage,
     previewCmd,
+    previewExplorerCmd,
   );
 }
 

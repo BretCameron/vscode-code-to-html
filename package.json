@@ -87,12 +87,21 @@
         "command": "codeToHtml.previewAsHtml",
         "title": "Preview as HTML",
         "category": "Code to HTML"
+      },
+      {
+        "command": "codeToHtml.previewAsHtmlFromExplorer",
+        "title": "Preview as HTML (Explorer)",
+        "category": "Code to HTML"
       }
     ],
     "menus": {
       "commandPalette": [
         {
           "command": "codeToHtml.copyAsHtmlFromExplorer",
+          "when": "false"
+        },
+        {
+          "command": "codeToHtml.previewAsHtmlFromExplorer",
           "when": "false"
         }
       ],
@@ -130,6 +139,18 @@
         "command": "codeToHtml.copyAsHtmlFromExplorer",
         "key": "ctrl+shift+h",
         "mac": "cmd+shift+h",
+        "when": "filesExplorerFocus"
+      },
+      {
+        "command": "codeToHtml.previewAsHtml",
+        "key": "ctrl+shift+alt+h",
+        "mac": "cmd+shift+alt+h",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "codeToHtml.previewAsHtmlFromExplorer",
+        "key": "ctrl+shift+alt+h",
+        "mac": "cmd+shift+alt+h",
         "when": "filesExplorerFocus"
       }
     ],
