@@ -98,8 +98,10 @@ export async function highlightCode(
     await ensureTheme(hl, theme);
     themeName = theme;
   } else {
-    await hl.loadTheme(theme);
     themeName = theme.name ?? "custom";
+    if (!hl.getLoadedThemes().includes(themeName)) {
+      await hl.loadTheme(theme);
+    }
   }
 
   if (lang === "plaintext") {
