@@ -75,14 +75,9 @@ async function copyFromEditor(
   vscode.window.showInformationMessage(`Copied ${what} as HTML`);
 }
 
-async function copyFromExplorer(
+async function readFileEntries(
   uris: vscode.Uri[],
-  config: vscode.WorkspaceConfiguration,
-  workspaceRoot: string | undefined,
-): Promise<void> {
-  const theme = await resolveTheme(config);
-  const options = { ...readConfig(config), theme, workspaceRoot };
-
+): Promise<{ files: FileEntry[]; skipped: string[] }> {
   const files: FileEntry[] = [];
   const skipped: string[] = [];
 
@@ -108,6 +103,19 @@ async function copyFromExplorer(
       skipped.push(u.fsPath);
     }
   }
+
+  return { files, skipped };
+}
+
+async function copyFromExplorer(
+  uris: vscode.Uri[],
+  config: vscode.WorkspaceConfiguration,
+  workspaceRoot: string | undefined,
+): Promise<void> {
+  const theme = await resolveTheme(config);
+  const options = { ...readConfig(config), theme, workspaceRoot };
+
+  const { files, skipped } = await readFileEntries(uris);
 
   if (files.length === 0) {
     vscode.window.showWarningMessage("No readable text files selected.");
@@ -296,30 +304,46 @@ export function activate(context: vscode.ExtensionContext) {
 
   const previewCmd = vscode.commands.registerCommand(
     "codeToHtml.previewAsHtml",
-    async () => {
-      const editor = vscode.window.activeTextEditor;
-      if (!editor) {
-        vscode.window.showWarningMessage("No active editor.");
-        return;
-      }
+    async (uri: vscode.Uri, allUris: vscode.Uri[]) => {
       const config = vscode.workspace.getConfiguration("codeToHtml");
       const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
       const theme = await resolveTheme(config);
       const options = { ...readConfig(config), theme, workspaceRoot };
 
-      const selection = editor.selection;
-      const hasSelection = !selection.isEmpty;
-      const content = hasSelection
-        ? editor.document.getText(selection)
-        : editor.document.getText();
-
-      const filePath = editor.document.uri.fsPath;
-      const startLine = hasSelection ? selection.start.line + 1 : undefined;
-      lastPreviewFiles = [{ absolutePath: filePath, content, startLine }];
+      const uris = allUris?.length ? allUris : uri ? [uri] : [];
 
       try {
+        if (uris.length > 0) {
+          const { files, skipped } = await readFileEntries(uris);
+          if (files.length === 0) {
+            vscode.window.showWarningMessage("No readable text files selected.");
+            return;
+          }
+          lastPreviewFiles = files;
+          if (skipped.length) {
+            vscode.window.showWarningMessage(`${skipped.length} file(s) skipped (binary or too large).`);
+          }
+        } else {
+          const editor = vscode.window.activeTextEditor;
+          if (!editor) {
+            vscode.window.showWarningMessage("No active editor.");
+            return;
+          }
+          const selection = editor.selection;
+          const hasSelection = !selection.isEmpty;
+          const content = hasSelection
+            ? editor.document.getText(selection)
+            : editor.document.getText();
+          const filePath = editor.document.uri.fsPath;
+          const startLine = hasSelection ? selection.start.line + 1 : undefined;
+          lastPreviewFiles = [{ absolutePath: filePath, content, startLine }];
+        }
+
+        const title = lastPreviewFiles.length > 1
+          ? `Code to HTML Preview (${lastPreviewFiles.length} files)`
+          : "Code to HTML Preview";
         const html = await buildHtml(lastPreviewFiles, options);
-        showPreview(html, renderPreview);
+        showPreview(html, renderPreview, title);
       } catch (err: unknown) {
         const errMsg = err instanceof Error ? err.message : String(err);
         vscode.window.showErrorMessage(

@@ -6,10 +6,12 @@ let onRefresh: (() => Promise<void>) | null = null;
 export function showPreview(
   html: string,
   refresh: () => Promise<void>,
+  title = "Code to HTML Preview",
 ): void {
   onRefresh = refresh;
 
   if (panel) {
+    panel.title = title;
     panel.webview.html = wrapHtml(html);
     panel.reveal();
     return;
@@ -17,7 +19,7 @@ export function showPreview(
 
   panel = vscode.window.createWebviewPanel(
     "codeToHtmlPreview",
-    "Code to HTML Preview",
+    title,
     vscode.ViewColumn.Beside,
     { enableScripts: true },
   );

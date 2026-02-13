@@ -101,6 +101,11 @@
           "command": "codeToHtml.copyAsHtml",
           "group": "5_cutcopypaste",
           "when": "resourceScheme == file"
+        },
+        {
+          "command": "codeToHtml.previewAsHtml",
+          "group": "5_cutcopypaste",
+          "when": "resourceScheme == file"
         }
       ],
       "editor/context": [
