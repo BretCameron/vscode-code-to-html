@@ -7,7 +7,12 @@ import {
   type BuildOptions,
   type FileEntry,
 } from "./html-builder.js";
-import { showPreview } from "./preview.js";
+import {
+  showPreview,
+  refreshPreview,
+  isPreviewOpen,
+  updatePreviewHtml,
+} from "./preview.js";
 import { resolveActiveTheme } from "./theme-resolver.js";
 
 async function resolveTheme(
@@ -277,6 +282,18 @@ export function activate(context: vscode.ExtensionContext) {
     },
   );
 
+  // Shared state for preview refresh
+  let lastPreviewFiles: FileEntry[] = [];
+
+  async function renderPreview() {
+    const config = vscode.workspace.getConfiguration("codeToHtml");
+    const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    const theme = await resolveTheme(config);
+    const options = { ...readConfig(config), theme, workspaceRoot };
+    const html = await buildHtml(lastPreviewFiles, options);
+    updatePreviewHtml(html);
+  }
+
   const previewCmd = vscode.commands.registerCommand(
     "codeToHtml.previewAsHtml",
     async () => {
@@ -298,13 +315,11 @@ export function activate(context: vscode.ExtensionContext) {
 
       const filePath = editor.document.uri.fsPath;
       const startLine = hasSelection ? selection.start.line + 1 : undefined;
-      const files: FileEntry[] = [
-        { absolutePath: filePath, content, startLine },
-      ];
+      lastPreviewFiles = [{ absolutePath: filePath, content, startLine }];
 
       try {
-        const html = await buildHtml(files, options);
-        showPreview(html);
+        const html = await buildHtml(lastPreviewFiles, options);
+        showPreview(html, renderPreview);
       } catch (err: unknown) {
         const errMsg = err instanceof Error ? err.message : String(err);
         vscode.window.showErrorMessage(
@@ -313,6 +328,12 @@ export function activate(context: vscode.ExtensionContext) {
       }
     },
   );
+
+  const configWatcher = vscode.workspace.onDidChangeConfiguration((e) => {
+    if (e.affectsConfiguration("codeToHtml") && isPreviewOpen()) {
+      refreshPreview();
+    }
+  });
 
   const toggleWordWrap = vscode.commands.registerCommand(
     "codeToHtml.toggleWordWrap",
@@ -333,6 +354,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     cmd,
     explorerCmd,
+    configWatcher,
     selectTheme,
     toggleLineNumbers,
     toggleBorder,

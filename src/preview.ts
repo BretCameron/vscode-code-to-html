@@ -1,8 +1,14 @@
 import * as vscode from "vscode";
 
 let panel: vscode.WebviewPanel | null = null;
+let onRefresh: (() => Promise<void>) | null = null;
 
-export function showPreview(html: string): void {
+export function showPreview(
+  html: string,
+  refresh: () => Promise<void>,
+): void {
+  onRefresh = refresh;
+
   if (panel) {
     panel.webview.html = wrapHtml(html);
     panel.reveal();
@@ -27,7 +33,24 @@ export function showPreview(html: string): void {
 
   panel.onDidDispose(() => {
     panel = null;
+    onRefresh = null;
   });
+}
+
+export async function refreshPreview(): Promise<void> {
+  if (panel && onRefresh) {
+    await onRefresh();
+  }
+}
+
+export function isPreviewOpen(): boolean {
+  return panel !== null;
+}
+
+export function updatePreviewHtml(html: string): void {
+  if (panel) {
+    panel.webview.html = wrapHtml(html);
+  }
 }
 
 function wrapHtml(html: string): string {
