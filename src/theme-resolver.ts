@@ -1,4 +1,5 @@
 import * as path from "path";
+import { parse as parseJsonc } from "jsonc-parser";
 
 interface ExtensionInfo {
   extensionPath: string;
@@ -27,4 +28,20 @@ export function findThemeContribution(
     }
   }
   return undefined;
+}
+
+export function parseThemeJson(content: string): any {
+  return parseJsonc(content);
+}
+
+export function mergeThemes(parent: any, child: any): any {
+  return {
+    ...parent,
+    ...child,
+    colors: { ...parent.colors, ...child.colors },
+    tokenColors: [
+      ...(parent.tokenColors ?? []),
+      ...(child.tokenColors ?? []),
+    ],
+  };
 }
