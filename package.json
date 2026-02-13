@@ -17,6 +17,12 @@
   "engines": {
     "vscode": "^1.85.0"
   },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "npm run build && vsce package",
+    "test": "vitest run"
+  },
   "categories": [
     "Formatters",
     "Other"
@@ -221,11 +227,9 @@
       }
     }
   },
-  "scripts": {
-    "build": "node esbuild.js",
-    "watch": "node esbuild.js --watch",
-    "package": "vsce package",
-    "test": "vitest run"
+  "dependencies": {
+    "jsonc-parser": "^3.3.1",
+    "shiki": "^1.24.0"
   },
   "devDependencies": {
     "@types/node": "^25.2.3",
@@ -234,9 +238,5 @@
     "esbuild": "^0.24.0",
     "typescript": "^5.7.0",
     "vitest": "^4.0.18"
-  },
-  "dependencies": {
-    "jsonc-parser": "^3.3.1",
-    "shiki": "^1.24.0"
   }
 }
