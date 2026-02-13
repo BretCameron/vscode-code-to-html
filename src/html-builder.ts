@@ -38,6 +38,12 @@ function getDisplayName(
   }
 }
 
+function stripClasses(html: string): string {
+  return html
+    .replace(/ class="[^"]*"/g, "")
+    .replace(/ tabindex="[^"]*"/g, "");
+}
+
 function addBorder(html: string): string {
   // Shiki's <pre> already has a style attribute — inject border into it
   return html.replace(
@@ -92,7 +98,7 @@ export async function buildHtml(
     const lang = options.languageOverride && options.languageOverride !== "auto"
       ? options.languageOverride
       : detectLanguage(file.absolutePath);
-    let highlighted = await highlightCode(file.content, lang, options.theme);
+    let highlighted = stripClasses(await highlightCode(file.content, lang, options.theme));
 
     if (options.lineNumbers) {
       highlighted = addLineNumbers(highlighted, file.startLine);
