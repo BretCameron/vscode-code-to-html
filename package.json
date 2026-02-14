@@ -21,7 +21,9 @@
     "build": "node esbuild.js",
     "watch": "node esbuild.js --watch",
     "package": "npm run build && vsce package",
-    "test": "vitest run"
+    "test": "vitest run",
+    "pretest:e2e": "npm run build && tsc -p e2e/tsconfig.json",
+    "test:e2e": "node e2e/out/run-tests.js"
   },
   "categories": [
     "Formatters",
@@ -260,10 +262,13 @@
     "shiki": "^1.24.0"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.10",
     "@types/node": "^25.2.3",
     "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.1",
     "esbuild": "^0.24.0",
+    "mocha": "^11.7.5",
     "typescript": "^5.7.0",
     "vitest": "^4.0.18"
   }
