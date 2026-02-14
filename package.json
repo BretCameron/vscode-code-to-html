@@ -2,7 +2,7 @@
   "name": "vscode-code-to-html",
   "displayName": "Code to HTML",
   "description": "Copy syntax-highlighted code as HTML for blog posts, forum submissions and more!",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": {
     "name": "Bret Cameron",
     "url": "https://bretcameron.com/"
