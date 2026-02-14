@@ -11,7 +11,7 @@ const opts = {
   format: "cjs",
   platform: "node",
   target: "node18",
-  sourcemap: true,
+  sourcemap: watch,
   minify: !watch,
   mainFields: ["module", "main"],
 };
