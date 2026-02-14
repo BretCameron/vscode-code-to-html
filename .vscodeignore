@@ -8,3 +8,4 @@ esbuild.js
 vitest.config.ts
 .vscode/**
 *.vsix
+dist/*.map
