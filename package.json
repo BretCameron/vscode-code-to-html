@@ -120,11 +120,13 @@
       "editor/context": [
         {
           "command": "codeToHtml.copyAsHtml",
-          "group": "9_cutcopypaste"
+          "group": "9_cutcopypaste",
+          "when": "editorLangId"
         },
         {
           "command": "codeToHtml.previewAsHtml",
-          "group": "9_cutcopypaste"
+          "group": "9_cutcopypaste",
+          "when": "editorLangId"
         }
       ]
     },

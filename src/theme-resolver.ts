@@ -42,6 +42,7 @@ export function mergeThemes(parent: any, child: any): any {
     ...child,
     colors: { ...parent.colors, ...child.colors },
     tokenColors: [...(parent.tokenColors ?? []), ...(child.tokenColors ?? [])],
+    semanticTokenColors: { ...parent.semanticTokenColors, ...child.semanticTokenColors },
   };
 }
 

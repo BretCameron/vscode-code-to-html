@@ -12,6 +12,7 @@ const opts = {
   platform: "node",
   target: "node18",
   sourcemap: true,
+  minify: !watch,
   mainFields: ["module", "main"],
 };
 
