@@ -1,3 +1,4 @@
+import * as crypto from "crypto";
 import * as vscode from "vscode";
 
 let panel: vscode.WebviewPanel | null = null;
@@ -56,10 +57,12 @@ export function updatePreviewHtml(html: string): void {
 }
 
 function wrapHtml(html: string): string {
+  const nonce = crypto.randomBytes(16).toString("hex");
   return `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
 <style>
   body { padding: 16px; font-family: system-ui, sans-serif; }
   .toolbar { margin-bottom: 12px; }
@@ -84,7 +87,7 @@ function wrapHtml(html: string): string {
   <button id="copyBtn">Copy HTML</button>
 </div>
 <div class="preview">${html}</div>
-<script>
+<script nonce="${nonce}">
   const vscode = acquireVsCodeApi();
   const rawHtml = document.querySelector('.preview').innerHTML;
   document.getElementById('copyBtn').addEventListener('click', () => {
