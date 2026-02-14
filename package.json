@@ -20,7 +20,7 @@
   "scripts": {
     "build": "node esbuild.js",
     "watch": "node esbuild.js --watch",
-    "package": "npm run build && vsce package",
+    "package": "npm run build && npm test && npm run test:e2e && vsce package",
     "test": "vitest run",
     "pretest:e2e": "npm run build && tsc -p e2e/tsconfig.json",
     "test:e2e": "node e2e/out/run-tests.js"
