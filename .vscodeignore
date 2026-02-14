@@ -4,3 +4,7 @@ docs/**
 tsconfig.json
 esbuild.js
 .gitignore
+.github/**
+vitest.config.ts
+.vscode/**
+*.vsix

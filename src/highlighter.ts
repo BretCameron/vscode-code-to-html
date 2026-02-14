@@ -8,7 +8,7 @@ import {
   type BundledTheme,
   type ThemeRegistrationRaw,
 } from "shiki";
-import { escapeHtml } from "./html-builder.js";
+import { escapeHtml } from "./utils.js";
 
 export type ThemeOption = BundledTheme | ThemeRegistrationRaw;
 
@@ -105,9 +105,7 @@ export async function highlightCode(
     themeName = theme;
   } else {
     themeName = theme.name ?? "custom";
-    if (!hl.getLoadedThemes().includes(themeName)) {
-      await hl.loadTheme(theme);
-    }
+    await hl.loadTheme(theme);
   }
 
   if (lang === "plaintext") {

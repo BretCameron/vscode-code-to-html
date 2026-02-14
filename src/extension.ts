@@ -272,8 +272,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       try {
         // Get explorer selection via built-in command (writes paths to clipboard)
+        const savedClip = await vscode.env.clipboard.readText();
         await vscode.commands.executeCommand("copyFilePath");
         const clipText = await vscode.env.clipboard.readText();
+        await vscode.env.clipboard.writeText(savedClip);
         const paths = clipText.split(/\r?\n/).filter(Boolean);
 
         if (paths.length === 0) {
@@ -363,8 +365,10 @@ export function activate(context: vscode.ExtensionContext) {
     "codeToHtml.previewAsHtmlFromExplorer",
     async () => {
       try {
+        const savedClip = await vscode.env.clipboard.readText();
         await vscode.commands.executeCommand("copyFilePath");
         const clipText = await vscode.env.clipboard.readText();
+        await vscode.env.clipboard.writeText(savedClip);
         const paths = clipText.split(/\r?\n/).filter(Boolean);
 
         if (paths.length === 0) {

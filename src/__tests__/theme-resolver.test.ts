@@ -125,5 +125,21 @@ describe("theme-resolver", () => {
       const result = mergeThemes(parent, child);
       expect(result.tokenColors).toHaveLength(1);
     });
+
+    it("merges semanticTokenColors (child overrides parent)", () => {
+      const parent = {
+        name: "parent",
+        semanticTokenColors: { variable: "#aaa", function: "#bbb" },
+      };
+      const child = {
+        name: "child",
+        semanticTokenColors: { variable: "#ccc" },
+      };
+      const result = mergeThemes(parent, child);
+      expect(result.semanticTokenColors).toEqual({
+        variable: "#ccc",
+        function: "#bbb",
+      });
+    });
   });
 });
