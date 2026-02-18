@@ -8,15 +8,15 @@ Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/item
 
 ## Features
 
-- **Syntax highlighting** via [Shiki](https://shiki.matsu.io/), the same engine VS Code itself uses
-- **300+ languages**, including TypeScript, Python, Rust, Go, C++, Ruby, Shell, and many more
-- **54 colour themes**, all built-in Shiki themes loaded on demand
-- **Multi-file support**: select several files in the Explorer to copy them in one block
-- **Optional line numbers** with proper alignment and non-selectable styling
-- **Line number offset**: selections preserve their original editor line numbers
-- **File path headers** above each code block (filename, relative path, absolute path, or none)
-- **Language override** for cases where auto-detection gets it wrong
-- **Live preview** in a webview before copying
+- 🎨 **Syntax highlighting** via [Shiki](https://shiki.matsu.io/), the same engine VS Code itself uses
+- 🌍 **300+ languages**, including TypeScript, Python, Rust, Go, C++, Ruby, Shell, and many more
+- 🌈 **54 colour themes**, all built-in Shiki themes loaded on demand
+- 📁 **Multi-file support**: select several files in the Explorer to copy them in one block
+- 🔢 **Optional line numbers** with proper alignment and non-selectable styling
+- 📍 **Line number offset**: selections preserve their original editor line numbers
+- 📂 **File path headers** above each code block (filename, relative path, absolute path, or none)
+- 🔧 **Language override** for cases where auto-detection gets it wrong
+- 👀 **Live preview** in a webview before copying
 
 ## Usage
 
