@@ -1,6 +1,6 @@
 # Code to HTML
 
-A VS Code extension that copies syntax-highlighted code as HTML. I built it for blog posts and documentation, but it works just as well for emails, forums, and anywhere else you need formatted code.
+A VS Code extension that copies syntax-highlighted code as HTML. I built it for forum posts, but it works just as well for blog posts, emails, documentation, and anywhere else you need formatted code.
 
 ## Installation
 
