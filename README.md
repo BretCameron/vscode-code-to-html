@@ -4,6 +4,12 @@ Copy syntax-highlighted code as HTML — for blog posts, forums, emails, docs an
 
 Right-click any file (or multiple files) in the Explorer and select **Copy as HTML**. You can also use the keyboard shortcut or command palette.
 
+## Installation
+
+Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BretCameron.vscode-code-to-html).
+
+Or search for `BretCameron.vscode-code-to-html` in the Extensions panel.
+
 ## Features
 
 - **Syntax highlighting** powered by [Shiki](https://shiki.matsu.io/) — the same engine behind VS Code's syntax highlighting
