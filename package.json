@@ -46,6 +46,7 @@
     "workspace",
     "ui"
   ],
+  "pricing": "Free",
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
