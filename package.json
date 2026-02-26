@@ -42,6 +42,10 @@
     "snippet"
   ],
   "activationEvents": [],
+  "extensionKind": [
+    "workspace",
+    "ui"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -110,13 +114,11 @@
       "explorer/context": [
         {
           "command": "codeToHtml.copyAsHtml",
-          "group": "5_cutcopypaste",
-          "when": "resourceScheme == file"
+          "group": "5_cutcopypaste"
         },
         {
           "command": "codeToHtml.previewAsHtml",
-          "group": "5_cutcopypaste",
-          "when": "resourceScheme == file"
+          "group": "5_cutcopypaste"
         }
       ],
       "editor/context": [
