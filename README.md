@@ -8,7 +8,7 @@ Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/item
 
 ## Features
 
-- 🎨 **Syntax highlighting** via [Shiki](https://shiki.matsu.io/), the same engine VS Code itself uses
+- 🎨 **Syntax highlighting** via [Shiki](https://shiki.style/), the same engine VS Code itself uses
 - 🌍 **300+ languages**, including TypeScript, Python, Rust, Go, C++, Ruby, Shell, and many more
 - 🌈 **54 colour themes**, all built-in Shiki themes loaded on demand
 - 📁 **Multi-file support**: select several files in the Explorer to copy them in one block
@@ -39,7 +39,7 @@ Binary files and files over 1 MB are skipped automatically.
 
 ## Supported languages
 
-Supports every language [Shiki](https://shiki.matsu.io/languages) does (300+), including TypeScript, Python, Rust, Go, C/C++, Java, Ruby, PHP, Swift, Kotlin, Shell, and SQL. Unrecognised file types are copied as plain text.
+Supports every language [Shiki](https://shiki.style/languages) does (300+), including TypeScript, Python, Rust, Go, C/C++, Java, Ruby, PHP, Swift, Kotlin, Shell, and SQL. Unrecognised file types are copied as plain text.
 
 ## Licence
 
