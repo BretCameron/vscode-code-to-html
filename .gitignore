@@ -4,3 +4,4 @@ dist/
 docs/
 e2e/out/
 .vscode-test/
+.env
