@@ -10,3 +10,5 @@ vitest.config.ts
 .vscode/**
 *.vsix
 dist/*.map
+.env
+.env.example
