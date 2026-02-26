@@ -4,7 +4,7 @@ A VS Code extension that copies syntax-highlighted code as HTML. I built it for 
 
 ## Installation
 
-Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BretCameron.vscode-code-to-html), or search for `BretCameron.vscode-code-to-html` in the Extensions panel.
+Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=BretCameron.vscode-code-to-html) or [Open VSX](https://open-vsx.org/extension/BretCameron/vscode-code-to-html), or search for `BretCameron.vscode-code-to-html` in the Extensions panel.
 
 ## Features
 
