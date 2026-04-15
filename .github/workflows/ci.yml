@@ -20,6 +20,36 @@ jobs:
       - run: npm test
 
   e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            vscode: stable
+          - os: windows-latest
+            vscode: stable
+          - os: macos-latest
+            vscode: stable
+          - os: ubuntu-latest
+            vscode: "1.85.0"
+    runs-on: ${{ matrix.os }}
+    env:
+      VSCODE_VERSION: ${{ matrix.vscode }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run pretest:e2e
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:e2e
+      - if: runner.os != 'Linux'
+        run: npm run test:e2e
+
+  package-smoke:
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,4 +59,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run pretest:e2e
-      - run: xvfb-run -a npm run test:e2e
+      - run: npx vsce package -o packaged.vsix
+      - run: unzip -q packaged.vsix -d packaged
+      - name: Run e2e against packaged vsix
+        run: xvfb-run -a node e2e/out/run-tests.js
+        env:
+          EXTENSION_DEV_PATH: ${{ github.workspace }}/packaged/extension
