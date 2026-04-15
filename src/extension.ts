@@ -20,7 +20,10 @@ async function resolveTheme(
 ): Promise<ThemeOption> {
   const themeSetting = config.get<string>("theme", "active");
   if (themeSetting === "active") {
-    const resolved = await resolveActiveTheme();
+    const themeId = vscode.workspace
+      .getConfiguration("workbench")
+      .get<string>("colorTheme");
+    const resolved = await resolveActiveTheme(themeId, vscode.extensions.all);
     if (resolved) return resolved;
     vscode.window.showWarningMessage(
       "Could not load active VS Code theme, using github-dark.",

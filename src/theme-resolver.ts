@@ -64,14 +64,13 @@ export async function loadThemeFromFile(
   return theme;
 }
 
-export async function resolveActiveTheme(): Promise<ThemeRegistrationRaw | null> {
-  const vscode = await import("vscode");
-  const themeId = vscode.workspace
-    .getConfiguration("workbench")
-    .get<string>("colorTheme");
+export async function resolveActiveTheme(
+  themeId: string | undefined,
+  extensions: ReadonlyArray<ExtensionInfo>,
+): Promise<ThemeRegistrationRaw | null> {
   if (!themeId) return null;
 
-  const contribution = findThemeContribution(vscode.extensions.all, themeId);
+  const contribution = findThemeContribution(extensions, themeId);
   if (!contribution) return null;
 
   try {
