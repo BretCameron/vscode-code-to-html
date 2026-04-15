@@ -28,6 +28,20 @@ suite("configOptions", () => {
     return vscode.env.clipboard.readText();
   }
 
+  test("theme: active (default) — resolves without error", async () => {
+    // Exercises the default `theme: "active"` path, which resolves the live
+    // VS Code theme. Previously untested; left codeToHtml.theme unset so
+    // resolveTheme takes the "active" branch.
+    await vscode.env.clipboard.writeText("__sentinel__");
+
+    const doc = await vscode.workspace.openTextDocument(fixtureUri);
+    await vscode.window.showTextDocument(doc);
+    const clip = await copyHtml();
+
+    assert.notStrictEqual(clip, "__sentinel__", "copyAsHtml did not write to clipboard");
+    assert.ok(clip.includes("<pre"), "missing <pre> tag");
+  });
+
   test("theme: github-light", async () => {
     const config = vscode.workspace.getConfiguration("codeToHtml");
     await config.update("theme", "github-light", vscode.ConfigurationTarget.Global);
