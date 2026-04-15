@@ -13,6 +13,7 @@ async function main() {
     extensionDevelopmentPath,
     extensionTestsPath,
     launchArgs: [testWorkspace, "--disable-extensions"],
+    timeout: 60_000,
   });
 }
 

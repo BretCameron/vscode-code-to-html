@@ -7,6 +7,7 @@ async function main() {
     extensionDevelopmentPath: path.resolve(__dirname, "../.."),
     extensionTestsPath: path.resolve(__dirname, "./playground"),
     launchArgs: [path.resolve(__dirname, "../fixtures"), "--disable-extensions"],
+    timeout: 60_000,
   });
 }
 
