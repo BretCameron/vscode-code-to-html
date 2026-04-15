@@ -2,7 +2,7 @@
 
 A VS Code extension that copies syntax-highlighted code as HTML. I built it for forum posts, but it works just as well for blog posts, emails, documentation, and anywhere else you need formatted code.
 
-![Screenshot of Code to HTML showing the right-click Copy as HTML menu and the live preview panel](https://raw.githubusercontent.com/BretCameron/vscode-code-to-html/main/images/example.png)
+![Screenshot of Code to HTML showing the right-click Copy as HTML menu and the live preview panel](https://raw.githubusercontent.com/BretCameron/vscode-code-to-html/main/images/example.webp)
 
 ## Installation
 
