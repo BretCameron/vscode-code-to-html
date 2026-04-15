@@ -23,7 +23,8 @@
     "package": "npm run build && npm test && npm run test:e2e && vsce package",
     "test": "vitest run",
     "pretest:e2e": "npm run build && tsc -p e2e/tsconfig.json",
-    "test:e2e": "node e2e/out/run-tests.js"
+    "test:e2e": "node e2e/out/run-tests.js",
+    "playground": "npm run pretest:e2e && node e2e/out/run-playground.js"
   },
   "categories": [
     "Formatters",
